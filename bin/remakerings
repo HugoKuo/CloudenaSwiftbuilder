@@ -1,0 +1,26 @@
+#!/bin/bash
+
+echo "Create Rings for 3 zone 2 replicas"
+swiftp=/usr/local/bin/
+cd /etc/swift
+
+rm -f *.builder *.ring.gz backups/*.builder backups/*.ring.gz
+
+${swiftp}/swift-ring-builder object.builder create 18 3 1
+${swiftp}/swift-ring-builder object.builder add z1-127.0.0.1:36000/sdb1 1
+${swiftp}/swift-ring-builder object.builder add z2-127.0.0.1:36010/sdb2 1
+${swiftp}/swift-ring-builder object.builder add z3-127.0.0.1:36020/sdb3 1
+${swiftp}/swift-ring-builder object.builder add z4-127.0.0.1:36030/sdb4 1
+${swiftp}/swift-ring-builder object.builder rebalance
+${swiftp}/swift-ring-builder container.builder create 18 3 1
+${swiftp}/swift-ring-builder container.builder add z1-127.0.0.1:36001/sdb1 1
+${swiftp}/swift-ring-builder container.builder add z2-127.0.0.1:36011/sdb2 1
+${swiftp}/swift-ring-builder container.builder add z3-127.0.0.1:36021/sdb3 1
+${swiftp}/swift-ring-builder container.builder add z4-127.0.0.1:36031/sdb4 1
+${swiftp}/swift-ring-builder container.builder rebalance
+${swiftp}/swift-ring-builder account.builder create 18 3 1
+${swiftp}/swift-ring-builder account.builder add z1-127.0.0.1:36002/sdb1 1
+${swiftp}/swift-ring-builder account.builder add z2-127.0.0.1:36012/sdb2 1
+${swiftp}/swift-ring-builder account.builder add z3-127.0.0.1:36022/sdb3 1
+${swiftp}/swift-ring-builder account.builder add z4-127.0.0.1:36032/sdb4 1
+${swiftp}/swift-ring-builder account.builder rebalance
